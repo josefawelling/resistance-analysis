@@ -1,0 +1,14 @@
+configfile: "config/config.yaml"
+
+pepfile: config["pepfile"]
+
+rule fastp:
+    input:
+        "data/MIN.fastq.gz"
+    output:
+        filtered = "results/1/MIN_out.fastq.gz",
+        trimmed = "results/1/MIN_trimmed.fastq.gz",
+        json = "results/1/MIN_fastp.json",
+        html= "results/1/MIN_fastp.html",
+    shell:
+        "fastp --in1 {input} --out1 {output.trimmed} --failed_out {output.filtered} --json {output.json} --html {output.html}"

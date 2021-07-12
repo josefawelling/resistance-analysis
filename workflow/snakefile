@@ -4,7 +4,8 @@ pepfile: config["pepfile"]
 
 include: "rules/common.smk"
 include: "rules/preprocessing.smk"
+include: "rules/assembly.smk"
 
 rule all:
     input:
-        expand("results/{id}/multiqc", id=get_all_ids())
+        expand("results/{id}/flye", id=get_all_ids())

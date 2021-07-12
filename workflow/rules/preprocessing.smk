@@ -2,11 +2,13 @@ rule fastp_nanopore:
     input:
         get_nanopore_reads
     params:
-        filtered = "results/{id}/fastp/MIN_out.fastq.gz"
+        filtered = "results/{id}/fastp/ONT_out.fastq.gz"
     output:
-        trimmed = "results/{id}/fastp/MIN_trimmed.fastq.gz",
-        json = "results/{id}/fastp/MIN_fastp.json",
-        html= "results/{id}/fastp/MIN_fastp.html",
+        trimmed = "results/{id}/fastp/ONT_trimmed.fastq.gz",
+        json = "results/{id}/fastp/ONT_fastp.json",
+        html= "results/{id}/fastp/ONT_fastp.html",
+    log:
+        "logs/{id}/fastp_nanopore.log"
     shell:
         "fastp --in1 {input} --out1 {output.trimmed} --failed_out {params.filtered} --json {output.json} --html {output.html}"
 
@@ -17,10 +19,12 @@ rule fastp_illumina:
     params:
         filtered = "results/{id}/fastp/BMH_out.fastq.gz"
     output:
-        trimmed_r1 = "results/{id}/fastp/BMH_r1_trimmed.fastq.gz",
-        trimmed_r2 = "results/{id}/fastp/BMH_r2_trimmed.fastq.gz",
-        json = "results/{id}/fastp/BMH_fastp.json",
-        html= "results/{id}/fastp/BMH_fastp.html",
+        trimmed_r1 = "results/{id}/fastp/IL-r1_trimmed.fastq.gz",
+        trimmed_r2 = "results/{id}/fastp/IL-r2_trimmed.fastq.gz",
+        json = "results/{id}/fastp/IL_fastp.json",
+        html= "results/{id}/fastp/IL_fastp.html",
+    log:
+        "logs/{id}/fastp_illumina.log"
     shell:
         "fastp --in1 {input.r1} --in2 {input.r2} --out1 {output.trimmed_r1} --out2 {output.trimmed_r2} --failed_out {params.filtered} --json {output.json} --html {output.html}"
 
@@ -29,5 +33,7 @@ rule multiqc:
         "results/{id}/"
     output:
         directory("results/{id}/multiqc/")
+    log:
+        "logs/{id}/multiqc.log"
     shell:
         "multiqc {input} -o {output}"

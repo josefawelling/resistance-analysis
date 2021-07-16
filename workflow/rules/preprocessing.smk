@@ -30,10 +30,10 @@ rule fastp_illumina:
 
 rule multiqc:
     input:
-        "results/{id}/"
+        expand("results/{{id}}/fastp/{platform}_fastp.json", platform=get_platforms())
     output:
         directory("results/{id}/multiqc/")
     log:
         "logs/{id}/multiqc.log"
     shell:
-        "multiqc {input} -o {output}"
+        "multiqc --force {input} -o {output}"

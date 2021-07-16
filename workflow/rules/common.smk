@@ -19,3 +19,6 @@ def get_illumina_reads2(wildcards):
 def get_nanopore_reads(wildcards):
     return pep.sample_table.loc[wildcards.id][["nanopore_reads"]]
 
+def get_platforms():
+    platforms = ["ONT", "IL"]
+    return platforms

@@ -1,39 +1,65 @@
-rule fastp_nanopore:
+rule nanoqc_before_trim:
     input:
         get_nanopore_reads
-    params:
-        filtered = "results/{id}/fastp/ONT_out.fastq.gz"
     output:
-        trimmed = "results/{id}/fastp/ONT_trimmed.fastq.gz",
-        json = "results/{id}/fastp/ONT_fastp.json",
-        html= "results/{id}/fastp/ONT_fastp.html",
+        directory("results/{id}/reports/before_trim/nanoqc/")
     log:
-        "logs/{id}/fastp_nanopore.log"
+        "logs/nanoqc/{id}_before_trim.log"
     shell:
-        "fastp --in1 {input} --out1 {output.trimmed} --failed_out {params.filtered} --json {output.json} --html {output.html}"
+        "mkdir -p {output} && "
+        "nanoQC -o {output} {input} 2> {log}"
 
-rule fastp_illumina:
+rule nanoplot_before_trim:
     input:
-        r1 = get_illumina_reads1,
-        r2 = get_illumina_reads2
-    params:
-        filtered = "results/{id}/fastp/BMH_out.fastq.gz"
+        get_nanopore_reads
     output:
-        trimmed_r1 = "results/{id}/fastp/IL-r1_trimmed.fastq.gz",
-        trimmed_r2 = "results/{id}/fastp/IL-r2_trimmed.fastq.gz",
-        json = "results/{id}/fastp/IL_fastp.json",
-        html= "results/{id}/fastp/IL_fastp.html",
+        directory("results/{id}/reports/before_trim/nanoplot/")
     log:
-        "logs/{id}/fastp_illumina.log"
+        "logs/nanoplot/{id}_before_trim.log"
     shell:
-        "fastp --in1 {input.r1} --in2 {input.r2} --out1 {output.trimmed_r1} --out2 {output.trimmed_r2} --failed_out {params.filtered} --json {output.json} --html {output.html}"
+        "NanoPlot --fastq {input} --outdir {output} 2> {log}"
 
-rule multiqc:
+rule porechop:
     input:
-        expand("results/{{id}}/fastp/{platform}_fastp.json", platform=get_platforms())
+        get_nanopore_reads
     output:
-        directory("results/{id}/multiqc/")
+        #must be a file not a folder
+        "results/{id}/porechop/{id}_trim.fastq.gz"
     log:
-        "logs/{id}/multiqc.log"
+        "logs/porechop/{id}.log"
     shell:
-        "multiqc --force {input} -o {output}"
+        "porechop -i {input} -o {output} 2> {log}"
+
+rule filtlong_lite:
+    input:
+        reads = "results/{id}/porechop/{id}_trim.fastq.gz"
+    output:
+        "results/{id}/filtlong/{id}_flite.fastq"
+    params:
+        extra=" --min_length 1000 --keep_percent 95",
+        target_bases = 0
+    log:
+        "logs/filtlong/{id}_flite.log"
+    wrapper:
+        "0.77.0/bio/filtlong"
+
+rule nanoqc_after_flite:
+    input:
+        "results/{id}/filtlong/{id}_flite.fastq"
+    output:
+        directory("results/{id}/reports/after_flite/nanoqc/")
+    log:
+        "logs/nanoqc/{id}_after_flite.log"
+    shell:
+        "mkdir -p {output} && "
+        "nanoQC -o {output} {input} 2> {log}"
+
+rule nanoplot_after_flite:
+    input:
+        "results/{id}/filtlong/{id}_flite.fastq"
+    output:
+        directory("results/{id}/reports/after_flite/nanoplot/")
+    log:
+        "logs/nanoplot/{id}_after_flite.log"
+    shell:
+        "NanoPlot --fastq {input} --outdir {output} 2> {log}"

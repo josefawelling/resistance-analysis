@@ -8,5 +8,8 @@ include: "rules/assembly.smk"
 
 rule all:
     input:
-        expand("results/{id}/multiqc", id=get_all_ids()),
-        expand("results/{id}/checkm", id=get_all_ids())
+        expand("results/{id}/reports/before_trim/nanoqc", id=get_all_ids()),
+        expand("results/{id}/reports/before_trim/nanoplot", id=get_all_ids()),
+        expand("results/{id}/reports/after_flite/nanoqc", id=get_all_ids()),
+        expand("results/{id}/reports/after_flite/nanoplot", id=get_all_ids()),
+        expand("results/{id}/trycycler/", id=get_all_ids())

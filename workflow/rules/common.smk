@@ -10,15 +10,8 @@ samples.index.names = ["sample_name"]
 def get_all_ids():
     return pep.sample_table["sample_name"].to_list()
 
-def get_illumina_reads1(wildcards):
-    return pep.sample_table.loc[wildcards.id][["illumina_reads1"]]
-
-def get_illumina_reads2(wildcards):
-    return pep.sample_table.loc[wildcards.id][["illumina_reads2"]]
-
 def get_nanopore_reads(wildcards):
     return pep.sample_table.loc[wildcards.id][["nanopore_reads"]]
 
-def get_platforms():
-    platforms = ["ONT", "IL"]
-    return platforms
+def get_genome_size(wildcards):
+    return pep.sample_table.loc[wildcards.id][["species_genome_size"]]

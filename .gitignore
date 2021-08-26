@@ -1,6 +1,8 @@
 *.log
 data/*
 results/*
-test/*
 .snakemake/*
 ressources/*
+workflow/scripts/control.py
+workflow/scripts/process_subassemblies.py
+config/pep/documents.csv

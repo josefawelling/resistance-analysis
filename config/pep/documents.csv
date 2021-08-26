@@ -1,2 +1,2 @@
-sample_name,nanopore_reads,illumina_reads1,illumina_reads2
-2,data/MIN.fastq.gz,data/BMH-R1.fastq.gz,data/BMH-R2.fastq.gz
+sample_name,nanopore_reads,species_genome_size
+bc01,data/barcode01.fastq.gz,4.6m

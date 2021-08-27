@@ -30,25 +30,30 @@ def assemble_subsets(subsets_dir, assemblies_dir):
 
         os.system(f"flye --nano-raw {subset} -o {subset_dir}")
 
-        # copy all subassemblies in one folder, renamed with the subsetnr to identify
-        os.system(f"cp {subset_dir}assembly.fasta {assemblies_dir}assembly{subset_id}.fasta")
+        # renamed with the subsetnr to identify
+        os.system(f"mv {subset_dir}assembly.fasta {subset_dir}assembly{subset_id}.fasta")
+        # copy all subassemblies in one folder
+        os.system(f"cp {subset_dir}assembly{subset_id}.fasta {assemblies_dir}assembly{subset_id}.fasta")
 
 def checkm_subassemblies(assemblies_dir, reports_dir):
 
     reports_folder = f"{reports_dir}checkm_subassemblies/"
     create_dir(reports_folder)
-    subassembly_folder = glob.glob("{assemblies_dir}subassembly*")
+    summary_output = f"{reports_folder}/summary"
+    os.system(f"> {summary_output}")
+    subassembly_folder = glob.glob(f"{assemblies_dir}subassembly*")
 
     for subassembly in subassembly_folder:
-        output = reports_folder + subassembly[subassembly.rfind("/sub")+1 : subset.rfind("/")] #subassembly01-12
+        output = reports_folder + subassembly[subassembly.rfind("/sub")+1 :] #subassembly01-12
         create_dir(output)
         os.system(f"checkm lineage_wf -x fasta {subassembly} {output}")
+        os.system(f"checkm qa {output}/lineage.ms {output} >> {summary_output}")
 
 
 input_reads = snakemake.input[0] #"results/bc01/filtlong/bc01_flite.fastq"
 out_dir = snakemake.output[0] #"results/bc01/trycycler/"
 reports_dir = snakemake.params.reports_dir #"results/bc01/reports/"
-e_coli_size = "4600000" #snakemake.params.genome_size
+e_coli_size = snakemake.params.genome_size
 
 subsets_dir = out_dir + "/subsets/"
 create_dir(subsets_dir)
@@ -61,6 +66,7 @@ create_dir(assemblies_dir)
 assemble_subsets(subsets_dir,assemblies_dir)
 
 checkm_subassemblies(assemblies_dir, reports_dir)
+
 
 """"
 assemblies_path = assemblies_dir + "*.fasta"

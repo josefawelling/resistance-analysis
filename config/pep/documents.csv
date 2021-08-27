@@ -1,2 +1,3 @@
 sample_name,nanopore_reads,species_genome_size
-bc01,data/barcode01.fastq.gz,4.6m
+bc02,data/barcode02.fastq.gz,4600000
+bc03,data/barcode03.fastq.gz,4600000

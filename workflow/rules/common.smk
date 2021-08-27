@@ -14,4 +14,4 @@ def get_nanopore_reads(wildcards):
     return pep.sample_table.loc[wildcards.id][["nanopore_reads"]]
 
 def get_genome_size(wildcards):
-    return pep.sample_table.loc[wildcards.id][["species_genome_size"]]
+    return pep.sample_table.loc[wildcards.id]["species_genome_size"]

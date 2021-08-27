@@ -53,12 +53,12 @@ def checkm_subassemblies(assemblies_dir, reports_dir):
 input_reads = snakemake.input[0] #"results/bc01/filtlong/bc01_flite.fastq"
 out_dir = snakemake.output[0] #"results/bc01/trycycler/"
 reports_dir = snakemake.params.reports_dir #"results/bc01/reports/"
-e_coli_size = snakemake.params.genome_size
+genome_size = snakemake.params.genome_size
 
 subsets_dir = out_dir + "/subsets/"
 create_dir(subsets_dir)
 
-create_subsets(input_reads, subsets_dir, e_coli_size) # -> outdir/sample_*.fastq
+create_subsets(input_reads, subsets_dir, genome_size) # -> outdir/sample_*.fastq
 
 assemblies_dir = out_dir + "/assemblies/"
 create_dir(assemblies_dir)
